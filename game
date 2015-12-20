@@ -1,0 +1,542 @@
+## By: rroth2
+## Last edit: 6/12/2015
+
+from sys import exit
+from random import randint
+
+class Scene(object):
+
+	def enter(self):
+		print "This scene is not yet configured."
+		exit(1)
+		
+class Engine(object):
+	
+	def __init__(self, scene_map):
+		self.scene_map = scene_map
+		
+	def play(self):
+		current_scene = self.scene_map.opening_scene()
+		last_scene = self.scene_map.next_scene('end')
+		
+		while current_scene != last_scene:
+			next_scene_name = current_scene.enter()
+			current_scene = self.scene_map.next_scene(next_scene_name)
+			
+		current_scene.enter()
+
+class Death(Scene):
+	line = [
+		"You lost!",
+		"I didn't think it was possible but look at you! You lost!",
+		"Lord have mercy.",
+		"Oh honey, bless your heart.",
+		"How you messed up this bad, I have no idea.",
+		"You did that on purpose.",
+		"This is what happens when you do something 'to see what happens'.",
+		"I still love you...",
+		"Inconceivable.",
+		"You very well knew the story couldn't go on that way!"
+	]	
+	
+	def enter(self):
+		print Death.line[randint(0, len(self.line)-1)]
+		exit(1)
+		
+class Opening(Scene):
+
+	def enter(self):
+		a = """
+Grandfather: It was the book my father used to read to me when I was sick,
+	I used to read it to your father, and today, I'm gonna read it to you.
+Grandson:  Does it got any sports in it?
+Grandfather:  Are you kidding? Fencing, fighting, torture, revenge, giants, 
+	monsters, chases, escapes, True Love, miracles....
+Grandson:  Doesn't sound too bad. I'll try and stay awake. 
+Grandfather:  Oh. Well thank you very much. Very nice of you.
+	Your vote of confidence is overwhelming. All right. 'The Princess Bride, by S. Morgenstern, 
+Chapter One.  Buttercup was raised on a small farm in the country of Florin.'"""
+		print a
+		print "\n"
+		
+		action = raw_input("Press 'Enter' to continue: ")
+		
+		if action == "":
+			print "\n"
+			return 'farmhouse'
+		else:
+			return 'opening' 
+
+class Farmhouse(Scene):
+
+	def enter(self):
+		b = """Grandfather:  "Nothing gave Buttercup as much pleasure as ordering Westley around." 
+Buttercup:  Farm Boy, polish my horse's saddle. I want to see my face shining in it by morning. 
+Westley:  As you wish. 
+Grandfather:  "'As you wish' was all he ever said to her." 
+
+Buttercup:  Farm boy, fill these with water... please.
+
+How does Westley reply?
+A: As you wish.
+B: F*** off. """
+		
+		c = """ Grandfather: That day she was amazed to discover that when he was saying 
+		'As you wish', what he meant was, 'I love you.'  
+		
+		And even more amazing was the day she realized she truly loved him back."""
+		
+		print b 
+
+		action = raw_input("> ")
+		
+		if action == "A":
+			print "As you wish."
+			print "\n"
+			print c
+			print "\n"
+			return 'ocean'
+		
+		elif action == "B":
+			print "'Fuck off.'"
+			print "And Westley left to adventure for treasure and wealth, thus leaving Buttercup to"
+			print "do 'as she wishes' all by her dumb self."
+			print "\n"
+			return 'death'
+			
+		else:
+			print "I said, A or B ... it doesn't get more simple than that."
+			print "\n"
+			return 'farmhouse'
+
+class Ocean(Scene):
+	def enter(self):
+		d = """ 
+A few things happen:
+	- Buttercup and Westley profess their love for each other (Yay!)
+	- Westley leaves, however, to seek his fortune across the sea 
+	- Buttercup receives news that Westley was killed by the Dread Pirate Roberts! (Oh no!)
+	- Buttercup vows never to love again. (How noble)
+	- Prince Humpstafunk hears of Buttercup's beauty and declares he will marry her	
+	- Poor Buttercup is captured by three men: a giant, a Spanish swordsman, and a short, bald Sicilian
+
+And so, here we are with the three men and Princess Buttercup, who is tied up in a boat.
+Fezzik (giant) and Inigo (swordsman) are preparing to set sail as Vizzini(Sicilian)yells at them.
+
+Inigo:  Probably he means no... harm. 
+Fezzik:  He's really very short on... charm! 
+Inigo:  Ah, You have a great gift for rhyme. 
+Fezzik:  Yes, yes, some of the time. 
+Vizzini:  Enough of that! 	
+
+Soon they're out at sea. Inigo keeps looking behind him, swearing he saw something following them.
+As he expresses his concern to Vizzini, Buttercup jumps off the ship!!!
+
+She begins to hear the shrieks of eels, coming closer...
+Does she 'swim faster away' or 'return to the boat'? 
+
+"""
+		print d 
+		
+		action = raw_input("> ")
+		
+		if action == "swim faster away":
+			print "\n"
+			print "She paddles faster and faster as the shrieks become"
+			print "louder and louder..."
+			print "\n"
+			return 'death'
+			
+		elif action == "return to the boat":
+			print "\n"
+			print "Fezzik reaches down and pulls her back onto the boat just as an eel"
+			print "lunges for her face. She sits safe and alive"
+			print "... for now."
+			print "\n"
+			return 'cliff'
+			
+		else:
+			print "No. Two options. Don't make me label them A and B."
+			return 'ocean'
+
+class Cliff(Scene):
+	
+	def enter(self):
+		e = """
+The three men + Buttercup climb to the top of cliff while the man in black, who is in pursuit,
+is gaining on them.	
+At the top, Vizzini pulls out his dagger...
+Should he 'cut the rope' or 'run ahead'? """	
+		
+		print e
+		
+		action = raw_input("> ")
+		
+		if action == "cut the rope":
+			print "\n"
+			print "Vizzini cuts the rope. All three men peer over the edge of the cliff and..."
+			print "The masked man in black hangs on to the cliff!"
+			print "Vizzini: HE DIDN'T FALL?? INCONCEIVABLE!"
+			print "Inigo: You keep using that word. I do not think it means what you think it means."
+			print "\n"
+			print "Vizzini and Fezzik (carrying Buttercup) proceed to run ahead, leaving Inigo to"
+			print "challenge the masked man. 'Be careful,' said Fezzik, 'people in masks cannot be trusted'."
+			print "\n"
+			return 'inigo'
+
+		elif action == "run ahead":
+			print "Vizzini and Fezzik (carrying Buttercup) proceed to run ahead, leaving Inigo to"
+			print "challenge the masked man. 'Be careful,' said Fezzik, 'people in masks cannot be trusted'."
+			return 'inigo'
+			
+		else:	
+			print "Is this the 'rebellious' phase, they talk about?"
+			return 'cliff'
+
+class Inigo(Scene):
+	def enter(self):
+		f = """  
+Inigo: I loved my father, so naturally I challenged his murderer to a duel. 
+	I fail. Six fingered man leave me alive. 
+	But he give me these. Points to scars on his cheeks. 
+Man In Black:  How old were you? 
+Inigo:  I was eleven years old. When I was-a strong enough, 
+	I dedicated my life to the study of fencing, so the next time we meet, I will not fail. 
+	I will go up to the six fingered man and say, 
+	'Hello. My name is Inigo Montoya. You killed my father.  Prepare to die.' 
+	
+At this point, the Man in Black is ready to fight. So, type 'fight' to begin, or 'run away' 
+to be an unromantic sissy.""" 
+		
+		g = """ They begin to fight. Clang, clang, swish.  Clang, clang, swish.  
+Ting-ting-ting, ting-ting.  Ting, ting, ting.  
+(I'm just kidding, you didn't think I was actually going to do ALL the sound effects for this scene, did you?)"""
+		
+		h = """ They continue to fight until the Man In Black knocks Inigo's sword from his hands. 
+Inigo:  *Kneeling*  Kill me quickly. 
+Man In Black: I would as soon destroy a stained-glass window as an artist like yourself. However, since I can't have you following me either.... 
+The Man In Black hits Inigo over the head with the hilt of his sword. Inigo hits the ground, out cold. 
+Man In Black:  Please understand I hold you in the highest respect. (What a gentleman. *swoon*) """
+		
+		print f
+		
+		action = raw_input("> ")
+		
+		if action == "fight":
+			print "\n"
+			print g
+			print "\n"
+			print h 
+			print "\n"
+			return 'fezzik'
+	
+		elif action == "run away":
+			print "\n"
+			print "I am too disappointed to code even a snarky response."
+			print "I will just end it here..."
+			return 'death'
+			
+		else:
+			print "*rolls eyes*"
+			return 'Inigo' 
+	
+class Fezzik(Scene):
+	def enter(self):
+		i = """ The masked man in black continues on only to encounter Fezzik with a large rock
+in his arms! But you see, I am not the only one with a great deal of sarcasm:
+		
+Fezzik:  Why are you wearing a mask? Were you burned by acid or something like that?  
+Man In Black:  Oh no, it's just they're terribly comfortable. 
+	I think everyone'll be wearing them in the future.
+
+Fezzik has the man in black back up against a boulder... he looks up and sees a huge rock about to fall
+right onto Fezzik's head! Does he tell him? """
+		
+		j = """ The masked man yells, 'watch out!!' and Fezzik manages to jump away just in time for a massive
+rock to come crashing down upon where he once stood. 
+Fezzik sits down with tears in his eyes. "Thank you, masked man. You are noble."
+Fezzik stays sitting as the man in black continues after Vizzini and Buttercup. """
+		
+		k = """ The masked man says nothing as a huge rock comes crashing down, falling squarely upon the 
+giant's head. 
+' I do not envy you the headache you will have when you awake. But, in the meantime, rest well, and dream of large women,' the masked man says. """
+		
+		print i
+		
+		action = raw_input("Yes or no? ")
+		
+		if action == "yes":
+			print "\n"
+			print j 
+			print "\n"
+			return 'vizzini'
+			
+		elif action == "no":	
+			print "\n"
+			print k 
+			print "\n"
+			return 'vizzini'
+			
+		else:
+			print "Shall we go back to typing A and B??"
+			return 'fezzik' 
+
+class Vizzini(Scene):
+	def enter(self):
+		m = """ Vizzini is seated behind a covered table. Buttercup, blindfolded, is sitting to his left. 
+He holds a dagger to her neck.  On the table is a bottle of wine and two goblets. 
+The Man In Black approaches the Table. 
+
+Man In Black:  Well if there can be no arrangement, then we are at an impasse. 
+Vizzini:  I'm afraid so. I can't compete with you physically, and you're no match for my brains. 
+Man In Black: You're that smart? 
+Vizzini:  Let me put it this way:  have you ever heard of Plato, Aristotle, Socrates? 
+Man In Black:  Yes. 
+Vizzini:  Morons. 
+Man In Black:  Really. In that case, I challenge you to a battle of wits. 
+
+Turning away from Vizzini with the goblets, he pours the poison in. Goblets replaced on the table, one in front of each.  
+Man In Black: All right. Where is the poison? The battle of wits has begun. It ends when you decide and we both drink, and find out who is right... and who is dead. 
+
+Which goblet does Vizzini choose? """
+
+		n = """ 
+Man In Black: Pointing. You guessed wrong. 
+Vizzini:  You only think I guessed wrong! That's what's so funny! I switched glasses when your back was turned! Ha ha! 
+You fool! You fell victim to one of the classic blunders! The most famous is never get involved in a land war in Asia, 
+but only slightly less well known is this:  never go in against a Sicilian when death is on the line!! 
+Ha ha ha ha ha ha ha!! Ha ha ha ha ha ha ha!! Ha ha ha-- 
+	Stops suddenly, and falls dead, to his right. """
+
+		print m 
+		
+		action = raw_input("'A', his? Or 'B', the masked man's? ")
+		
+		if action == "A" or "B":
+			print n
+			print "Buttercup:  And to think, all that time it was your cup that was poisoned."
+			print "Man In Black:  They were both poisoned. I spent the last few years building up an immunity to Iocane powder."
+			print "He grabs her arm and they run off."
+			return 'hill'
+		
+		else:
+			print "There was literally no wrong answer."
+			print "None. EITHER A OR B. SCREW IT, YOU LOSE."
+			return 'death' 
+			
+class Hill(Scene):
+	def enter(self):
+		p = """ 
+		Meanwhile:
+- The Prince Humptadump is 'looking' for the Princess, although we all know he's putting on a show.
+- Buttercup finds out that the man in black is in fact, the Dread Pirate Roberts.
+- She hates him.
+- But then, she finds out... he's Westley!!!
+- Move on, you say? As you wish... it gets cheesy anyway. """
+
+		print p 
+		print "\n"
+		print "Press 'Enter' to continue"
+		
+		action = raw_input("> ")
+		
+		if action == "":
+			return 'fire_swamp'
+		else:
+			return 'hill'
+		
+class FireSwamp(Scene):
+	def enter(self):
+		q = """ 
+They head into the Fire Swamp and are making their way through when Buttercup says...
+Buttercup:  Westley, what about the R.O.U.S.s? 
+Westley:  Rodents Of Unusual Size? I don't think they exist. 
+
+An R.O.U.S. appears and pounces on Westley. Westley shouts and begins to fights the R.O.U.S. 
+and is bitten on the forearm.  
+It begins to head for Buttercup.  She hits at it with a branch and Westley loses his sword.  
+The R.O.U.S. bites his shoulder.  
+The R.O.U.S begins to head for Buttercup. 
+Buttercup: Westley! 
+
+Westley has to defeat the R.O.U.S. It's a 50/50 chance, really...
+Well, type '1' to swing at the creature or '2' to kick it. """
+
+		print q 
+		
+		win = "%d" % (randint(1,2))
+		action = raw_input("> ")
+		guesses = 1
+		
+		while action != win and guesses < 5:
+			print "The R.O.U.S. lunges to bite Westley, but he rolls away at the last second."
+			guesses += 1
+			action = raw_input("> ")
+			
+		if action == win:
+			print "The popping of a flame spurt is heard and Westley rolls the R.O.U.S. toward the sound."
+			print "He uses the spurt to ignite the animal."
+			print "Westley gets away!"
+			return 'pit_of_despair'
+		
+		else:
+			print "The R.O.U.S. bites down on Westley's arm and holds it firmly between its teeth."
+			print "'Run, Buttercup!' and he wills his love away to safety... and to keep her from watching him"
+			print "be eaten alive."
+			print "\n"
+			print "It seems to hold true that no one has yet survived the Fire Swamp..."
+			return 'death'
+			
+class PitOfDespair(Scene):
+	def enter(self):
+		r = """ 
+Much happens...
+- The princess demands Humperdick to bring Westley to her 
+- Prince Humpernickel makes false promises of sending his 4 fastest ships for him
+- Inigo and Fezzik are found in the Forest of Theives
+
+Westley is kept in the Pit of Despair... slowly being tortured. 
+"""
+	
+		s = """ 
+Humperduck: You truly love each other, and so you might have been truly happy. 
+Not one couple in a century has that chance, no matter what the storybooks say. 
+So I think no man in a century will suffer as greatly as you will. 
+*Takes the control of The Machine, and puts it to the highest setting* 
+Count Rugen: Not to 50!!!!
+
+Westley's screams echo for miles.
+
+Inigo: Fezzik! Fezzik! Listen! Do you hear? That is the sound of ultimate suffering. 
+My heart made that sound when Rugen slaughtered my father. The man in black makes it now. 
+
+Inigo and Fezzik follow the screams to find the man who so honorable spared their lives. """		
+		
+		print r 
+		print "The Count Rugan turns The Machine up to %d." % (randint(1,5))
+		
+		action = raw_input("Press 'Enter' to continue: ")
+		
+		if action == "":
+			print s 
+			return 'miracle'
+			
+		else:
+			return 'pit_of_despair'
+		
+class MiracleMax(Scene):
+	def enter(self):
+		t = """
+Inigo and Fezzik find themselves at the tree that hides the Pit of Despair. With the help of his
+father's sword, Inigo is finds the secret entrance into the Pit of Despair. There, Inigo and Fezzik 
+find Westley's lifeless corpse lying on the table where Humperding left him. Their only hope is now
+dead, what do they do? """
+
+		u = """ 
+At first, Miracle Max says no.
+Miracle Max:  Look, I'm retired. And besides, why would you want someone the King's stinking son fired? 
+I might kill whoever you wanted me to miracle. 
+
+But upon finding out that Westley is Buttercup's True Love and able to defeat (read: humiliate) Prince 
+Humptadunk, Miracle Max is fully on board. He creates a pill will bring Westley back to life.
+
+Inigo: That's a miracle pill? 
+Valerie:  The chocolate coating makes it go down easier, but you have to wait fifteen minutes for full potency, 
+and he shouldn't go in swimming after for at least-- what? 
+Miracle Max:  An hour-- """
+
+		print t 
+		print "\n"
+		
+		action = raw_input("'Mourn' Westley's death and leave Florin or 'Take body to Miracle Max'? ")
+
+		if action == "Mourn":
+			print "Inigo and Fezzik take Westley's body and return it to the ship Revenge."
+			print "They then leave Florin, never to return."
+			return 'death'
+			
+		elif action == "Take body to Miracle Max":
+			print "In a fleeting attempt to revive Westley and defeat Humperdong, Inigo brings the body to the hut of a man named Miracle Max."
+			print u 
+			return 'rescue'
+		
+		else:
+			print "Poof! You're a rabbit."
+			return 'miracle'
+
+class Rescue(Scene):
+	def enter(self):
+		v = """ 
+And they give Westley the pill, HE LIVES!, then they devise a plan to attack the castle. Then, Mawwage. Mawwage is what bwings us togevah today. 
+Mawwage, that bwessed awwangement, that dweam wifin a dweam. Then, Inigo fights (and kills) Count Dugen and Westley makes a fool of Hupperpup,
+and they escape away into the sunset.
+
+Do you want to hear the happy ending? """
+		
+		w = """ 
+Grandfather:  "They rode to freedom. *Scene segues to countryside*  
+And as dawn arose, Westley and Buttercup knew they were safe. 
+A wave of love swept over them." *They lean in to kiss*
+		
+Grandfather:  "Since the invention of the kiss, there have been five kisses that were rated the most passionate, 
+the most pure. *Buttercup and Westley kiss*  This one left them all behind."
+"""
+		
+		print v 
+		
+		action = raw_input("Yes or No? ")
+		
+		if action == "Yes":
+			print "\n"
+			print w 
+			return 'end'
+		
+		elif action == "No":
+			print "\n"
+			print "Fine. AS YOU WISH."
+			return 'end'
+			
+		else:
+			print "My love. Honestly? Y-e-s or N-o ONLY"
+			return 'rescue'
+			
+			
+class End(Scene):		
+
+	def enter(self):
+		print "They lived happily, although not perfectly, ever after."
+		print "The End."
+		return 'end'
+		
+class Map(object):
+	
+	scenes = {
+		'opening' : Opening(),
+		'farmhouse' : Farmhouse(),
+		'ocean' : Ocean(),
+		'cliff' : Cliff(),
+		'inigo' : Inigo(),
+		'fezzik' : Fezzik(),
+		'vizzini' : Vizzini(),
+		'hill' : Hill(),
+		'fire_swamp' : FireSwamp(),
+		'pit_of_despair' : PitOfDespair(),
+		'miracle' : MiracleMax(),
+		'rescue' : Rescue(),
+		'death' : Death(),
+		'end' : End(),
+	}
+	
+	def __init__(self, start_scene):
+		self.start_scene = start_scene
+		
+	def next_scene(self, scene_name):
+		val = Map.scenes.get(scene_name)
+		return val
+		
+	def opening_scene(self):
+		return self.next_scene(self.start_scene)
+		
+a_map = Map('opening')
+a_game = Engine(a_map)
+a_game.play()			
